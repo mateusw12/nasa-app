@@ -83,6 +83,20 @@ h4 {
   box-shadow: 0 8px 24px color-mix(in srgb, var(--accent-blue) 25%, transparent);
 }
 
+:root[data-theme="dark"] .ui-button {
+  border-color: color-mix(in srgb, var(--accent-blue) 45%, var(--accent-red) 20%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-blue) 28%, #081633 72%),
+    color-mix(in srgb, var(--accent-red) 24%, #0b1f45 76%)
+  );
+  color: #f8fbff;
+}
+
+:root[data-theme="dark"] .ui-button:hover {
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--accent-red) 24%, transparent);
+}
+
 .brand-gradient {
   background: linear-gradient(120deg, var(--accent-blue), var(--accent-red));
   -webkit-background-clip: text;
