@@ -83,6 +83,15 @@ h4 {
   box-shadow: 0 8px 24px color-mix(in srgb, var(--accent-blue) 25%, transparent);
 }
 
+.theme-select {
+  color-scheme: dark;
+}
+
+.theme-select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
 :root[data-theme="dark"] .ui-button {
   border-color: color-mix(in srgb, var(--accent-blue) 45%, var(--accent-red) 20%);
   background: linear-gradient(
