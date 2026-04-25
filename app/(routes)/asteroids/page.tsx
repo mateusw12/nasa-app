@@ -9,13 +9,14 @@ import { AsteroidsService } from "@/libs/services/asteroids.service";
 import { getToday } from "@/utils/date";
 
 interface AsteroidsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     start_date?: string;
-  };
+  }>;
 }
 
 export default async function AsteroidsPage({ searchParams }: AsteroidsPageProps) {
-  const startDate = searchParams.start_date || getToday();
+  const params = await searchParams;
+  const startDate = params.start_date || getToday();
   const feedResult = await resolveAsync(() => AsteroidsService.getAsteroids({ start_date: startDate }));
   if (!feedResult.data || feedResult.error) {
     return <ErrorState message={feedResult.error || "Falha ao carregar asteroides."} />;

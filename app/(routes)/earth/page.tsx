@@ -10,9 +10,9 @@ import { EarthService } from "@/libs/services/earth.service";
 import { getToday } from "@/utils/date";
 
 interface EarthPageProps {
-  searchParams: {
+  searchParams: Promise<{
     date?: string;
-  };
+  }>;
 }
 
 const epicImageUrl = (date: string, image: string) => {
@@ -21,7 +21,8 @@ const epicImageUrl = (date: string, image: string) => {
 };
 
 export default async function EarthPage({ searchParams }: EarthPageProps) {
-  const date = searchParams.date || getToday();
+  const params = await searchParams;
+  const date = params.date || getToday();
   const imagesResult = await resolveAsync(() => EarthService.getEarthImages(date));
   if (!imagesResult.data || imagesResult.error) {
     return <ErrorState message={imagesResult.error || "Falha ao carregar imagens da Terra."} />;

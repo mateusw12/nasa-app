@@ -10,17 +10,18 @@ import { MarsService } from "@/libs/services/mars.service";
 import { getToday } from "@/utils/date";
 
 interface MarsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     earth_date?: string;
     camera?: string;
-  };
+  }>;
 }
 
 const cameras = Object.values(MarsCamera);
 
 export default async function MarsPage({ searchParams }: MarsPageProps) {
-  const earthDate = searchParams.earth_date || getToday();
-  const camera = searchParams.camera || "";
+  const params = await searchParams;
+  const earthDate = params.earth_date || getToday();
+  const camera = params.camera || "";
   const responseResult = await resolveAsync(() => MarsService.getMarsPhotos({ earth_date: earthDate, camera }));
   if (!responseResult.data || responseResult.error) {
     return <ErrorState message={responseResult.error || "Falha ao carregar fotos de Marte."} />;
