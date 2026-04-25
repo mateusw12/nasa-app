@@ -9,13 +9,16 @@ import { ApodService } from "@/libs/services/apod.service";
 import { getToday, shiftDate } from "@/utils/date";
 
 interface APODPageProps {
-  searchParams: {
+  searchParams: Promise<{
     date?: string;
-  };
+  }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function APODPage({ searchParams }: APODPageProps) {
-  const date = searchParams.date || getToday();
+  const params = await searchParams;
+  const date = params.date || getToday();
   const apodResult = await resolveAsync(() => ApodService.getAPOD(date));
   if (!apodResult.data || apodResult.error) {
     return <ErrorState message={apodResult.error || "Falha ao carregar APOD."} />;

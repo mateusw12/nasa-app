@@ -12,6 +12,7 @@ export const DatePicker = ({ name, defaultValue, label = "Date" }: DatePickerPro
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const currentValue = searchParams.get(name) || defaultValue;
 
   const onChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -30,7 +31,7 @@ export const DatePicker = ({ name, defaultValue, label = "Date" }: DatePickerPro
       {label}
       <input
         type="date"
-        defaultValue={defaultValue}
+        value={currentValue}
         onChange={(event) => onChange(event.target.value)}
         className="rounded-xl border border-white/30 bg-black/20 px-3 py-2 text-[var(--text)]"
       />
