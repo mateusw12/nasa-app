@@ -4,6 +4,7 @@ export { EarthService } from "@/libs/services/earth.service";
 export { LibraryClientService } from "@/libs/services/library-client.service";
 export { LibraryService } from "@/libs/services/library.service";
 export { MarsService } from "@/libs/services/mars.service";
+export { MissionsClientService } from "@/libs/services/missions-client.service";
 export { SatellitesService } from "@/libs/services/satellites.service";
 export { ScienceService } from "@/libs/services/science.service";
 export { SpaceWeatherService } from "@/libs/services/space-weather.service";
