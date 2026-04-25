@@ -1,36 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NASA Space Platform
 
-## Getting Started
+Plataforma front-end educativa para explorar dados e midias oficiais da NASA em uma experiencia moderna, responsiva e com foco em usabilidade.
 
-First, run the development server:
+## Visao Geral
+
+O projeto agrega diferentes fontes publicas da NASA em modulos tematicos, com cache inteligente, tratamento de erro amigavel e arquitetura separada por camadas (API client, services, DTOs, hooks e componentes).
+
+## Principais Funcionalidades
+
+- APOD (Astronomy Picture of the Day)
+- Galeria de fotos de Marte (Curiosity)
+- Monitoramento de asteroides proximos da Terra
+- Imagens da Terra (EPIC) e eventos naturais (EONET)
+- Busca em NASA Image and Video Library (imagens e videos)
+- Missoes com conteudo curado
+- Clima espacial (DONKI)
+- Ciencia (TechPort + Exoplanet Archive)
+- Pagina de documentacao de endpoints em `/docs`
+
+## Stack Tecnica
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- TanStack Query 5
+- Framer Motion
+- ESLint + Prettier
+
+## Requisitos
+
+- Node.js 20+
+- npm 10+
+
+## Instalar e Executar
+
+1. Instale dependencias:
+
+```bash
+npm install
+```
+
+2. Crie seu arquivo de ambiente local:
+
+```bash
+cp env.example .env
+```
+
+3. Defina sua chave da NASA no `.env`:
+
+```env
+NEXT_PUBLIC_NASA_API_KEY=YOUR_API_KEY
+```
+
+4. Rode em desenvolvimento:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Abra no navegador:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`http://localhost:3000`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+- `npm run dev`: inicia ambiente local
+- `npm run build`: gera build de producao
+- `npm run start`: sobe app em modo producao
+- `npm run lint`: executa validacao de codigo
+- `npm run format`: formata o projeto
 
-To learn more about Next.js, take a look at the following resources:
+## Rotas da Aplicacao
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/` Dashboard
+- `/apod`
+- `/mars`
+- `/asteroids`
+- `/earth`
+- `/earth-live`
+- `/universe`
+- `/missions`
+- `/library`
+- `/space-weather`
+- `/science`
+- `/satellites`
+- `/docs`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Endpoints Internos (BFF)
 
-## Deploy on Vercel
+- `GET /api/library/search`
+- `GET /api/library/asset/{nasaId}`
+- `GET /api/library/metadata/{nasaId}`
+- `GET /api/library/captions/{nasaId}`
+- `GET /api/missions/curiosity-landing`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Esses endpoints encapsulam chamadas externas, padronizam erros e aplicam politicas de cache.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Fontes de Dados Externas
+
+- NASA Open APIs (`api.nasa.gov`)
+- NASA Image and Video Library (`images-api.nasa.gov`)
+- NASA TechPort (`techport.nasa.gov`)
+- NASA Exoplanet Archive (`exoplanetarchive.ipac.caltech.edu`)
+
+## Estrutura de Pastas
+
+```text
+app/
+	(routes)/         Paginas principais da aplicacao
+	api/              Endpoints internos (BFF)
+components/         Componentes reutilizaveis de UI
+hooks/              Hooks client-side (TanStack Query)
+libs/
+	api/              Clients HTTP/base clients
+	services/         Regras de acesso a dados por dominio
+	DTO/              Tipos de respostas (contratos)
+	enum/             Enums compartilhados
+	helpers/          Funcoes utilitarias de dominio
+utils/              Utilitarios gerais
+```
+
+## Boas Praticas de Seguranca
+
+- Nao comite chave de API em arquivos versionados.
+- Use placeholders em documentacao e exemplos (`YOUR_API_KEY`).
+- Prefira chamadas via endpoints internos em vez de acessar APIs externas diretamente no client.
+- Revise logs e prints para garantir que nenhum segredo foi exposto.
+
+## Qualidade e Validacao
+
+Antes de abrir PR:
+
+```bash
+npm run lint
+npm run build
+```
+
+## Licenca
+
+Este projeto esta sob a licenca definida no arquivo LICENSE.
