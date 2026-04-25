@@ -7,4 +7,5 @@ export enum AppRoute {
   Universe = "/universe",
   Missions = "/missions",
   Library = "/library",
+  Docs = "/docs",
 }

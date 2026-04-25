@@ -11,6 +11,7 @@ const navItems = [
   { href: AppRoute.Universe, label: "Universe" },
   { href: AppRoute.Missions, label: "Missions" },
   { href: AppRoute.Library, label: "Library" },
+  { href: AppRoute.Docs, label: "Docs" },
 ];
 
 export const Navbar = () => {

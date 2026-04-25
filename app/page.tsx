@@ -40,6 +40,11 @@ const moduleCards = [
     title: "NASA Library",
     description: "Busca por imagens e videos oficiais da NASA.",
   },
+  {
+    href: "/docs",
+    title: "API Docs",
+    description: "Guia dos endpoints, exemplos e boas praticas de integracao.",
+  },
 ];
 
 const DashboardPreview = async () => {
