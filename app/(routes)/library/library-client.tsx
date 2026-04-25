@@ -29,9 +29,9 @@ export const LibraryClient = () => {
     router.push(`/library?q=${encodeURIComponent(next)}&media_type=${encodeURIComponent(media)}`);
   };
 
-  const loadVideo = async (nasaId: string) => {
+  const loadVideo = async (nasaId: string): Promise<string | null> => {
     if (videoSources[nasaId]) {
-      return;
+      return videoSources[nasaId];
     }
 
     setVideoErrors((previous) => {
@@ -48,13 +48,41 @@ export const LibraryClient = () => {
         ...previous,
         [nasaId]: source,
       }));
+      return source;
     } catch (error) {
       setVideoErrors((previous) => ({
         ...previous,
         [nasaId]: error instanceof Error ? error.message : "Falha ao carregar video.",
       }));
+      return null;
     } finally {
       setLoadingVideoId(null);
+    }
+  };
+
+  const downloadFile = (url: string, filename: string) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
+  const handleDownloadVideo = async (nasaId: string) => {
+    const existingSource = videoSources[nasaId];
+
+    if (existingSource) {
+      downloadFile(existingSource, `${nasaId}.mp4`);
+      return;
+    }
+
+    const resolvedSource = await loadVideo(nasaId);
+
+    if (resolvedSource) {
+      downloadFile(resolvedSource, `${nasaId}.mp4`);
     }
   };
 
@@ -107,51 +135,80 @@ export const LibraryClient = () => {
             const isVideo = data.media_type === "video";
             const videoSource = videoSources[data.nasa_id];
             const videoError = videoErrors[data.nasa_id];
+            const mediaLabel = isVideo ? "Video" : "Imagem";
 
             return (
-              <Card key={`${data.nasa_id}-${index}`} title={data.title} className="card-hover">
-                {isVideo && videoSource ? (
-                  <video
-                    controls
-                    preload="metadata"
-                    className="h-48 w-full rounded-xl bg-black object-cover"
-                    src={videoSource}
-                  >
-                    Seu navegador nao suporta reproducao de video.
-                  </video>
-                ) : preview ? (
-                  <Image
-                    src={preview}
-                    alt={data.title}
-                    width={640}
-                    height={420}
-                    className="h-48 w-full rounded-xl object-cover"
-                    loading="lazy"
-                  />
-                ) : null}
-                <div className="mt-2 flex items-center justify-between text-xs text-[var(--muted)]">
-                  <span className="rounded-full border border-[var(--outline)] px-2 py-0.5">
-                    {isVideo ? "Video" : "Imagem"}
+              <Card
+                key={`${data.nasa_id}-${index}`}
+                title={data.title}
+                subtitle={data.date_created ? new Date(data.date_created).toLocaleDateString("pt-BR") : undefined}
+                className="card-hover group overflow-hidden border border-[var(--outline)]/70 bg-gradient-to-b from-white/30 to-transparent"
+              >
+                <div className="relative">
+                  {isVideo && videoSource ? (
+                    <video
+                      controls
+                      preload="metadata"
+                      className="h-48 w-full rounded-xl bg-black object-cover"
+                      src={videoSource}
+                    >
+                      Seu navegador nao suporta reproducao de video.
+                    </video>
+                  ) : preview ? (
+                    <Image
+                      src={preview}
+                      alt={data.title}
+                      width={640}
+                      height={420}
+                      className="h-48 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      loading="lazy"
+                    />
+                  ) : null}
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 rounded-b-xl bg-gradient-to-t from-black/45 to-transparent" />
+                  <span className="absolute left-3 top-3 rounded-full border border-white/35 bg-black/40 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-white">
+                    {mediaLabel}
                   </span>
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
                   {isVideo ? (
                     <button
                       type="button"
                       onClick={() => loadVideo(data.nasa_id)}
                       disabled={loadingVideoId === data.nasa_id}
-                      className="text-[var(--accent-blue)] hover:underline disabled:opacity-50"
+                      className="rounded-full border border-[var(--outline)] bg-[var(--surface)] px-3 py-1.5 text-[var(--text)] transition hover:border-[var(--accent-blue)] hover:text-[var(--accent-blue)] disabled:opacity-50"
                     >
                       {loadingVideoId === data.nasa_id ? "Carregando..." : "Reproduzir"}
                     </button>
-                  ) : (
-                    <a
-                      href={`/api/library/asset/${encodeURIComponent(data.nasa_id)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[var(--accent-blue)] hover:underline"
+                  ) : null}
+
+                  {isVideo ? (
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadVideo(data.nasa_id)}
+                      disabled={loadingVideoId === data.nasa_id}
+                      className="rounded-full border border-[var(--outline)] bg-[var(--surface)] px-3 py-1.5 text-[var(--text)] transition hover:border-[var(--accent-blue)] hover:text-[var(--accent-blue)] disabled:opacity-50"
                     >
-                      Ver manifest
-                    </a>
-                  )}
+                      Baixar video
+                    </button>
+                  ) : preview ? (
+                    <button
+                      type="button"
+                      onClick={() => downloadFile(preview, `${data.nasa_id}.jpg`)}
+                      className="rounded-full border border-[var(--outline)] bg-[var(--surface)] px-3 py-1.5 text-[var(--text)] transition hover:border-[var(--accent-blue)] hover:text-[var(--accent-blue)]"
+                    >
+                      Baixar imagem
+                    </button>
+                  ) : null}
+
+                  <a
+                    href={`/api/library/asset/${encodeURIComponent(data.nasa_id)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-[var(--outline)] bg-transparent px-3 py-1.5 text-[var(--muted)] transition hover:border-[var(--accent-red)] hover:text-[var(--accent-red)]"
+                  >
+                    Ver manifest
+                  </a>
                 </div>
                 {isVideo && videoError ? (
                   <p className="mt-2 text-xs text-[var(--accent-red)]">{videoError}</p>
