@@ -5,6 +5,7 @@ import { ErrorState } from "@/components/error-state";
 import { GalleryGrid } from "@/components/gallery-grid";
 import { SectionHeader } from "@/components/section-header";
 import { MarsCamera } from "@/libs/enum";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { MarsService } from "@/libs/services/mars.service";
 import { getToday } from "@/utils/date";
 
@@ -20,12 +21,11 @@ const cameras = Object.values(MarsCamera);
 export default async function MarsPage({ searchParams }: MarsPageProps) {
   const earthDate = searchParams.earth_date || getToday();
   const camera = searchParams.camera || "";
-  let response;
-  try {
-    response = await MarsService.getMarsPhotos({ earth_date: earthDate, camera });
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const responseResult = await resolveAsync(() => MarsService.getMarsPhotos({ earth_date: earthDate, camera }));
+  if (!responseResult.data || responseResult.error) {
+    return <ErrorState message={responseResult.error || "Falha ao carregar fotos de Marte."} />;
   }
+  const response = responseResult.data;
 
   const photos = response.photos.slice(0, 18);
 

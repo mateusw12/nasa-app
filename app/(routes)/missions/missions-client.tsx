@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/card";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { useMissionPhotos } from "@/hooks/useMissionPhotos";
 import { SectionHeader } from "@/components/section-header";
-import { MarsPhotosResponse } from "@/libs/DTO";
 
 const missionTimeline = [
   { year: "2012", label: "Curiosity chega a Marte" },
@@ -14,24 +13,8 @@ const missionTimeline = [
   { year: "2021", label: "Perseverance pousa em Jezero" },
 ];
 
-const fetchMissionLandingPhoto = async (): Promise<MarsPhotosResponse> => {
-  const response = await fetch("/api/missions/curiosity-landing");
-
-  if (!response.ok) {
-    const errorPayload = (await response.json().catch(() => null)) as { message?: string } | null;
-    throw new Error(errorPayload?.message || "Nao foi possivel carregar os dados da missao.");
-  }
-
-  return response.json();
-};
-
 export const MissionsClient = () => {
-  const missionPhotos = useQuery({
-    queryKey: ["missions", "curiosity-landing"],
-    queryFn: fetchMissionLandingPhoto,
-    staleTime: 1000 * 60 * 60 * 6,
-    gcTime: 1000 * 60 * 60 * 12,
-  });
+  const missionPhotos = useMissionPhotos();
 
   if (missionPhotos.isError) {
     return <ErrorState message={missionPhotos.error.message} />;

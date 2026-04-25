@@ -2,16 +2,17 @@ import { Card } from "@/components/card";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { SectionHeader } from "@/components/section-header";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { EarthService } from "@/libs/services/earth.service";
 
 export default async function EarthLivePage() {
-  let events;
-  let images;
-  try {
-    [events, images] = await Promise.all([EarthService.getEarthEvents(), EarthService.getEarthImages()]);
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const dataResult = await resolveAsync(() =>
+    Promise.all([EarthService.getEarthEvents(), EarthService.getEarthImages()]),
+  );
+  if (!dataResult.data || dataResult.error) {
+    return <ErrorState message={dataResult.error || "Falha ao carregar modulo Terra em tempo real."} />;
   }
+  const [events, images] = dataResult.data;
 
   return (
     <section className="space-y-6">

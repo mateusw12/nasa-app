@@ -2,15 +2,15 @@ import { Card } from "@/components/card";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { SectionHeader } from "@/components/section-header";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { SpaceWeatherService } from "@/libs/services/space-weather.service";
 
 export default async function SpaceWeatherPage() {
-  let events;
-  try {
-    events = await SpaceWeatherService.getSpaceWeather();
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const eventsResult = await resolveAsync(() => SpaceWeatherService.getSpaceWeather());
+  if (!eventsResult.data || eventsResult.error) {
+    return <ErrorState message={eventsResult.error || "Falha ao carregar clima espacial."} />;
   }
+  const events = eventsResult.data;
 
   return (
     <section className="space-y-6">

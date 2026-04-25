@@ -1,19 +1,17 @@
 import { Card } from "@/components/card";
 import { ErrorState } from "@/components/error-state";
 import { SectionHeader } from "@/components/section-header";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { ScienceService } from "@/libs/services/science.service";
 
 export default async function SciencePage() {
-  let projects;
-  let exoplanets;
-  try {
-    [projects, exoplanets] = await Promise.all([
-      ScienceService.getTechProjects(),
-      ScienceService.getExoplanets(),
-    ]);
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const scienceResult = await resolveAsync(() =>
+    Promise.all([ScienceService.getTechProjects(), ScienceService.getExoplanets()]),
+  );
+  if (!scienceResult.data || scienceResult.error) {
+    return <ErrorState message={scienceResult.error || "Falha ao carregar Science & Technology."} />;
   }
+  const [projects, exoplanets] = scienceResult.data;
 
   return (
     <section className="space-y-6">

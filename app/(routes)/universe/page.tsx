@@ -1,23 +1,19 @@
 import { Card } from "@/components/card";
 import { ErrorState } from "@/components/error-state";
 import { SectionHeader } from "@/components/section-header";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { ApodService } from "@/libs/services/apod.service";
 import { AsteroidsService } from "@/libs/services/asteroids.service";
 import { ScienceService } from "@/libs/services/science.service";
 
 export default async function UniversePage() {
-  let apod;
-  let asteroidsFeed;
-  let exoplanets;
-  try {
-    [apod, asteroidsFeed, exoplanets] = await Promise.all([
-      ApodService.getAPOD(),
-      AsteroidsService.getAsteroids(),
-      ScienceService.getExoplanets(),
-    ]);
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const universeResult = await resolveAsync(() =>
+    Promise.all([ApodService.getAPOD(), AsteroidsService.getAsteroids(), ScienceService.getExoplanets()]),
+  );
+  if (!universeResult.data || universeResult.error) {
+    return <ErrorState message={universeResult.error || "Falha ao carregar modulo Universe."} />;
   }
+  const [apod, asteroidsFeed, exoplanets] = universeResult.data;
   const asteroids = Object.values(asteroidsFeed.near_earth_objects).flat().slice(0, 6);
 
   return (

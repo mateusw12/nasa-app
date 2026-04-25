@@ -4,6 +4,7 @@ import { DatePicker } from "@/components/date-picker";
 import { ErrorState } from "@/components/error-state";
 import { FavoriteButton } from "@/components/favorite-button";
 import { SectionHeader } from "@/components/section-header";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { ApodService } from "@/libs/services/apod.service";
 import { getToday, shiftDate } from "@/utils/date";
 
@@ -15,12 +16,11 @@ interface APODPageProps {
 
 export default async function APODPage({ searchParams }: APODPageProps) {
   const date = searchParams.date || getToday();
-  let apod;
-  try {
-    apod = await ApodService.getAPOD(date);
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const apodResult = await resolveAsync(() => ApodService.getAPOD(date));
+  if (!apodResult.data || apodResult.error) {
+    return <ErrorState message={apodResult.error || "Falha ao carregar APOD."} />;
   }
+  const apod = apodResult.data;
 
   return (
     <section className="space-y-6">

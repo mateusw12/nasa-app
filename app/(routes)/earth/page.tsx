@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { GalleryGrid } from "@/components/gallery-grid";
 import { SectionHeader } from "@/components/section-header";
+import { resolveAsync } from "@/libs/helpers/async-result";
 import { EarthService } from "@/libs/services/earth.service";
 import { getToday } from "@/utils/date";
 
@@ -21,12 +22,11 @@ const epicImageUrl = (date: string, image: string) => {
 
 export default async function EarthPage({ searchParams }: EarthPageProps) {
   const date = searchParams.date || getToday();
-  let images;
-  try {
-    images = await EarthService.getEarthImages(date);
-  } catch (error) {
-    return <ErrorState message={(error as Error).message} />;
+  const imagesResult = await resolveAsync(() => EarthService.getEarthImages(date));
+  if (!imagesResult.data || imagesResult.error) {
+    return <ErrorState message={imagesResult.error || "Falha ao carregar imagens da Terra."} />;
   }
+  const images = imagesResult.data;
 
   return (
     <section className="space-y-6">

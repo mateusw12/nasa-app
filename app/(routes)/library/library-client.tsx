@@ -1,36 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/card";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { useLibrarySearch } from "@/hooks/useLibrarySearch";
 import { SectionHeader } from "@/components/section-header";
-import { NasaLibraryResponse } from "@/libs/DTO";
-
-const fetchLibrary = async (query: string): Promise<NasaLibraryResponse> => {
-  const response = await fetch(`/api/library/search?q=${encodeURIComponent(query)}`);
-
-  if (!response.ok) {
-    const payload = (await response.json().catch(() => null)) as { message?: string } | null;
-    throw new Error(payload?.message || "Nao foi possivel carregar a biblioteca NASA.");
-  }
-
-  return response.json();
-};
 
 export const LibraryClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "nebula";
 
-  const libraryQuery = useQuery({
-    queryKey: ["library-search", query],
-    queryFn: () => fetchLibrary(query),
-    staleTime: 1000 * 60 * 60 * 3,
-    gcTime: 1000 * 60 * 60 * 10,
-  });
+  const libraryQuery = useLibrarySearch(query);
 
   const submitSearch = (formData: FormData) => {
     const value = String(formData.get("q") || "").trim();
