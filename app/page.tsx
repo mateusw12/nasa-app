@@ -5,7 +5,8 @@ import { AnimatedReveal } from "@/components/animated-reveal";
 import { Card } from "@/components/card";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { SectionHeader } from "@/components/section-header";
-import { getAPOD, getAsteroids } from "@/libs/services/nasa";
+import { ApodService } from "@/libs/services/apod.service";
+import { AsteroidsService } from "@/libs/services/asteroids.service";
 import { getToday } from "@/utils/date";
 
 const moduleCards = [
@@ -42,7 +43,10 @@ const moduleCards = [
 ];
 
 const DashboardPreview = async () => {
-  const [apod, asteroidsFeed] = await Promise.all([getAPOD(), getAsteroids({ start_date: getToday() })]);
+  const [apod, asteroidsFeed] = await Promise.all([
+    ApodService.getAPOD(),
+    AsteroidsService.getAsteroids({ start_date: getToday() }),
+  ]);
 
   const asteroids = Object.values(asteroidsFeed.near_earth_objects).flat();
 
