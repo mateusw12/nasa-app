@@ -7,7 +7,7 @@ import { Card } from "@/components/card";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { SectionHeader } from "@/components/section-header";
-import { NasaLibraryResponse } from "@/types/nasa";
+import { NasaLibraryResponse } from "@/libs/DTO";
 
 const fetchLibrary = async (query: string): Promise<NasaLibraryResponse> => {
   const response = await fetch(`/api/library/search?q=${encodeURIComponent(query)}`);
