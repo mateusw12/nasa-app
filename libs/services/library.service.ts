@@ -1,5 +1,5 @@
 import { ExternalApiClient } from "@/libs/api/external-client";
-import { NasaLibraryResponse } from "@/types/nasa";
+import { NasaLibraryResponse } from "@/libs/DTO";
 
 const NASA_IMAGES_BASE_URL = "https://images-api.nasa.gov";
 

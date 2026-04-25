@@ -1,6 +1,6 @@
 import { NasaApiClient, NasaApiError } from "@/libs/api/nasa-client";
 import { LibraryService } from "@/libs/services/library.service";
-import { MarsPhotosResponse, NasaLibraryResponse } from "@/types/nasa";
+import { MarsPhotosResponse, NasaLibraryResponse } from "@/libs/DTO";
 
 export interface MarsPhotosParams {
   earth_date?: string;

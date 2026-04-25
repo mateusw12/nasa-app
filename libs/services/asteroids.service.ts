@@ -1,5 +1,5 @@
 import { NasaApiClient } from "@/libs/api/nasa-client";
-import { NeoFeedResponse } from "@/types/nasa";
+import { NeoFeedResponse } from "@/libs/DTO";
 
 export interface AsteroidsParams {
   start_date?: string;

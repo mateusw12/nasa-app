@@ -1,5 +1,5 @@
 import { NasaApiClient } from "@/libs/api/nasa-client";
-import { EonetResponse, EpicImage } from "@/types/nasa";
+import { EonetResponse, EpicImage } from "@/libs/DTO";
 
 export class EarthService {
   static getEarthImages(date?: string): Promise<EpicImage[]> {

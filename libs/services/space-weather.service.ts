@@ -1,5 +1,5 @@
 import { NasaApiClient } from "@/libs/api/nasa-client";
-import { DonkiEvent } from "@/types/nasa";
+import { DonkiEvent } from "@/libs/DTO";
 
 export class SpaceWeatherService {
   static getSpaceWeather(): Promise<DonkiEvent[]> {

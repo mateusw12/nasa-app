@@ -1,5 +1,5 @@
 import { ExternalApiClient } from "@/libs/api/external-client";
-import { ExoplanetRecord, TechportProject } from "@/types/nasa";
+import { ExoplanetRecord, TechportProject } from "@/libs/DTO";
 
 const TECHPORT_BASE_URL = "https://techport.nasa.gov/api";
 const EXOPLANET_BASE_URL = "https://exoplanetarchive.ipac.caltech.edu";
