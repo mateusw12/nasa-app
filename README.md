@@ -2,6 +2,8 @@
 
 Plataforma front-end educativa para explorar dados e midias oficiais da NASA em uma experiencia moderna, responsiva e com foco em usabilidade.
 
+Link: https://nasa-app-psi.vercel.app/
+
 ## Visao Geral
 
 O projeto agrega diferentes fontes publicas da NASA em modulos tematicos, com cache inteligente, tratamento de erro amigavel e arquitetura separada por camadas (API client, services, DTOs, hooks e componentes).
